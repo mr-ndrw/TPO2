@@ -1,4 +1,4 @@
-package edu.andrewtorski.tpo.second.run;
+package zad1;
 
 import edu.andrewtorski.tpo.second.client.ServerChatController;
 import edu.andrewtorski.tpo.second.client.ServerChatModel;
@@ -14,7 +14,8 @@ import java.io.IOException;
 public class Client implements Runnable {
 
     public static void main(String[] args) throws IOException {
-        new Thread(new Client()).start();
+//        new Thread(new Client()).start();
+        new Client().run();
     }
 
     @Override

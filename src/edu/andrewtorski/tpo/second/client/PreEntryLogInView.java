@@ -9,6 +9,8 @@ import javax.swing.text.Document;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 
 /**
@@ -22,7 +24,7 @@ public class PreEntryLogInView extends JFrame {
 
     private JLabel lab_username = new JLabel("What will be your username?");
     private JTextArea ta_username = new JTextArea(1, 20);
-    private JButton b_confirm = new JButton("Sounds good!");
+    private JButton b_confirm = new JButton("Sounds good! [Enter]");
     private SwingChatClient swingChatClient;
 
     //endregion Private Fields
@@ -38,7 +40,6 @@ public class PreEntryLogInView extends JFrame {
 
     public static void promptForUsername(SwingChatClient chatClient) {
         PreEntryLogInView prompt = new PreEntryLogInView(chatClient);
-
     }
 
     //region Private Helpers
@@ -71,11 +72,32 @@ public class PreEntryLogInView extends JFrame {
         b_confirm.setEnabled(false);
         ta_username.getDocument().addDocumentListener(new UserNameTextAreaDocumentListener());
 
+        ta_username.addKeyListener(new EnterKeyListener());
+
         container.add(lab_username);
         container.add(ta_username);
         container.add(b_confirm);
 
         this.setVisible(true);
+    }
+
+    private void confirmUserName() {
+        Log.d(TAG, "Confirm button clicked...");
+        String textAreaContent = ta_username.getText();
+        Log.d(TAG, String.format("Read text is: " + textAreaContent));
+        boolean isTextAreaContentNullOrEmpty = textAreaContent == null || textAreaContent.isEmpty();
+
+        if (!isTextAreaContentNullOrEmpty) {
+            try {
+                Log.d(TAG, "Dispatching event to SwingChatClient via log in.");
+                this.swingChatClient.logIn(textAreaContent.trim());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            this.setVisible(false);
+            this.dispose();
+        }
+
     }
 
     //endregion Private Helpers
@@ -86,22 +108,7 @@ public class PreEntryLogInView extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Log.d(TAG, "Confirm button clicked...");
-            String textAreaContent = ta_username.getText();
-            Log.d(TAG, String.format("Read text is: " + textAreaContent));
-            boolean isTextAreaContentNullOrEmpty = textAreaContent == null || textAreaContent.isEmpty();
-
-            if (!isTextAreaContentNullOrEmpty) {
-                try {
-                    Log.d(TAG, "Dispatching event to SwingChatClient via log in.");
-                    PreEntryLogInView.this.swingChatClient.logIn(textAreaContent);
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-                PreEntryLogInView.this.setVisible(false);
-                PreEntryLogInView.this.dispose();
-            }
-
+            PreEntryLogInView.this.confirmUserName();
         }
     }
 
@@ -138,5 +145,30 @@ public class PreEntryLogInView extends JFrame {
     }
 
     //endregion UserNameTextAreaDocumentListener inner class
+
+    //region EnterKeyListener action listener
+
+    private class EnterKeyListener implements KeyListener {
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+            int typedKey = e.getExtendedKeyCode();
+            if (typedKey == KeyEvent.VK_ENTER) {
+                PreEntryLogInView.this.confirmUserName();
+            }
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+
+        }
+    }
+
+    //endregion EnterKeyListener action listener
 
 }

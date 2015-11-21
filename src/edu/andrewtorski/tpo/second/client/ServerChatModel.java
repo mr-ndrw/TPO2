@@ -243,6 +243,7 @@ public class ServerChatModel implements ChatModel, Runnable {
     public void sendMessage(String message) throws IOException {
         Log.d(TAG, "Sending message...");
         String prependedMessageWithUsernameAndProtocolHeader = "MSG:" + this.produceMessage(message);
+        Log.d(TAG, String.format("Message is as follows: " + prependedMessageWithUsernameAndProtocolHeader));
         byte[] dataBytes = prependedMessageWithUsernameAndProtocolHeader.getBytes();
         this.queueDataToSend(dataBytes);
         Log.d(TAG, "Message sent.");

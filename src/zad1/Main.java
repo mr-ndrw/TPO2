@@ -1,4 +1,4 @@
-package edu.andrewtorski.tpo.second.run;
+package zad1;
 
 /**
  * @author Torski Andrzej S10415

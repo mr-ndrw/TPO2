@@ -1,4 +1,4 @@
-package edu.andrewtorski.tpo.second.run;
+package zad1;
 
 import edu.andrewtorski.tpo.second.server.ChatServer;
 
@@ -12,16 +12,17 @@ import java.io.IOException;
 public class Server implements Runnable {
 
     public static void main(String[] args) {
-        System.out.println("Server hi!");
-        new Thread(new Server()).start();
+//        System.out.println("Server hi!");
+//        new Thread(new Server()).start();
+        new Server().run();
     }
+
 
     @Override
     public void run() {
         try {
             ChatServer server = new ChatServer("localhost", 1337);
-            Thread thread = new Thread(server);
-            thread.start();
+            server.run();
         } catch (IOException e) {
             e.printStackTrace();
         }
